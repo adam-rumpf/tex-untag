@@ -30,9 +30,9 @@ This module defines two main public functions:
 
 ## Command Line Usage
 
-The main `tex_untag.py` file can be used from the command line as follows:
+This package defines a console script `tex-untag` which can be used as follows:
 ```
-usage: tex_untag.py [-h] [-v] [-f [FILES ...]] -t TAG [-e [EXTENSIONS ...]] [-q] [-r] [-c]
+usage: tex-untag [-h] [-v] [-f [FILES ...]] -t TAG [-e [EXTENSIONS ...]] [-q] [-r] [-c]
 
 A script for removing markup tags from a set of TeX files.
 
@@ -63,10 +63,10 @@ case all files will be included.
 
 For example,
 ```
-$ python3 tex_untag.py -f introduction.tex results.tex conclusion.tex -t textit -c
+$ tex-untag -f introduction.tex results.tex conclusion.tex -t textit -c
 ```
 would remove all italic `\textit{...}` tags from the three local files `introduction.tex`, `results.tex`, and `conclusion.tex`, including those located inside comments, while
 ```
-$ python3 tex_untag.py -f report -t textcolor{red} -e tex bbl --recursive
+$ tex-untag -f report -t textcolor{red} -e tex bbl --recursive
 ```
 would remove all red text `\textcolor{red}{...}` tags from every `.tex` or `.bbl` file within the local directory `report/`.
