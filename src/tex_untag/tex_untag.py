@@ -1,11 +1,6 @@
 """Defines the main TeX file processing scripts."""
 
-if __name__ != "__main__":
-    from ._version import __author__, __version__
-else:
-    import _version
-    __author__ = _version.__author__
-    __version__ = _version.__version__
+from ._version import __author__, __version__
 
 import argparse
 import os
@@ -235,7 +230,8 @@ def main():
     """
 
     # Define argument parser
-    parser = argparse.ArgumentParser(description=desc, epilog=epil)
+    parser = argparse.ArgumentParser(description=desc, epilog=epil,
+                         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-v", "--version", action="version", version=vers)
     parser.add_argument("-f", "--file", nargs="*", dest="files",
                         help="file, list of files, or directory to process " +
