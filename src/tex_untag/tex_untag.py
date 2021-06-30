@@ -148,9 +148,9 @@ def untag_folder(folder, tag, ext="tex", comment=False):
     tag -- tag to be removed
 
     Keyword arguments:
-    ext -- string or list of strings specifying file types to process
-        (default "tex"); using the string "*" converts all files regardless of
-        extension
+    ext -- case-insensitive string or list of strings specifying file types to
+        process (default "tex"); using the string "*" converts all files
+        regardless of extension
     comment -- True to process comment lines, False otherwise (default False)
 
     Returns:
@@ -167,11 +167,16 @@ def untag_folder(folder, tag, ext="tex", comment=False):
 
     # Convert extension list to tuple
     if isinstance(ext, str) == True:
-        ext = (ext,)
-    elif isinstance(ext, list) == True:
-        ext = tuple(ext)
-    elif isinstance(ext, tuple) == False:
+        ext = [ext]
+    elif isinstance(ext, tuple) == True:
+        ext = list(ext)
+    elif isinstance(ext, list) == False:
         sys.exit("File extensions must be a string or list of strings.")
+    
+    # Convert extensions into a lowercase tuple
+    for i in range(len(ext)):
+        ext[i] = ext[i].lower()
+    ext = tuple(ext)
 
     # Get directory path
     path = os.path.abspath(folder)
@@ -186,7 +191,7 @@ def untag_folder(folder, tag, ext="tex", comment=False):
         for f in files:
 
             # Skip excluded file types
-            if "*" not in ext and f.endswith(ext) == False:
+            if "*" not in ext and f.lower().endswith(ext) == False:
                 continue
 
             # Collect remaining files in list
@@ -194,16 +199,3 @@ def untag_folder(folder, tag, ext="tex", comment=False):
 
     # Process all selected files
     return untag_file(flist, tag=tag, comment=comment)
-
-#-----------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    ###
-    ### Add a -r argument to process a directory.
-    #print(_untag_string("This is a \\textit{t\\textbf{e}st}.", "textit"))
-    #print(_untag_string("This is a \\textit{test}.", "textit"))
-    #print(_untag_string("This is a \\textit{test.", "textit"))
-    ### Default to current directory
-    #if folder == None:
-    #    folder = os.getcwd()
-    pass
