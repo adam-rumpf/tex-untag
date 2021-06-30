@@ -1,11 +1,15 @@
 """Defines the main TeX file processing scripts."""
 
-from ._version import __author__, __version__
+if __name__ != "__main__":
+    from ._version import __author__, __version__
+else:
+    import _version
+    __author__ = _version.__author__
+    __version__ = _version.__version__
 
 import argparse
 import os
 import re
-import sys
 
 #-----------------------------------------------------------------------------
 
@@ -147,7 +151,7 @@ def untag_folder(folder, tag, ext="tex", comment=False):
     """Removes all of a given tag from every TeX file in a given folder.
 
     Positional arguments:
-    folder -- directory to recursively proess
+    folder -- directory to recursively process
     tag -- tag to be removed
 
     Keyword arguments:
@@ -218,8 +222,8 @@ def main():
             "\narumpf@floridapoly.edu")
     epil = """
     This script removes a given TeX markup tag from a given file or set of
-    files. The tag is assumed to use the form "\tag{...}". The given tag
-    should include the full text that falls between the '\' and '{'
+    files. The tag is assumed to use the form "\\tag{...}". The given tag
+    should include the full text that falls between the '\\' and '{'
     characters.
 
     The file (-f) argument can include a single file, a list of files, or a
@@ -233,9 +237,11 @@ def main():
     # Define argument parser
     parser = argparse.ArgumentParser(description=desc, epilog=epil)
     parser.add_argument("-v", "--version", action="version", version=vers)
-    parser.add_argument("-f", "--file", nargs="+", dest="files",
-                        help="file, list of files, or directory to process")
-    parser.add_argument("-t", "--tag", nargs=1, dest="tag",
+    parser.add_argument("-f", "--file", nargs="*", dest="files",
+                        help="file, list of files, or directory to process " +
+                        "(if blank and --recursive, uses current working" +
+                        " directory)")
+    parser.add_argument("-t", "--tag", required=True, dest="tag",
                         help="tag to remove from files")
     parser.add_argument("-e", "--extension", nargs="*", dest="extensions",
                         default=["tex"],
@@ -252,6 +258,15 @@ def main():
 
     # Parse arguments
     args = parser.parse_args()
+
+    # Handle empty file list
+    if isinstance(args.files, list) == False or len(args.files) == 0:
+        if args.recursive == True:
+            # If no folder given, default to current working directory
+            args.files = os.getcwd()
+        else:
+            # Otherwise quit
+            raise SyntaxError("must supply at least one file name")
 
     # Determine behavior depending on arguments
     if args.recursive == True:

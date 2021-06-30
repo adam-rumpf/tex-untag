@@ -25,5 +25,48 @@ Note that, since this process involves overwriting existing files, it is recomme
 ## Functions
 
 This module defines two main public functions:
-* `tex_untag.untag_file(fname, tag[, comment])`: Removes the given `tag` from a single file or a list of files called `fname`. The optional `comment` boolean specifies whether to remove tags from comments (default `False`). Returns the total number of removals made.
-* `tex_untag.untag_folder(folder, tag[, ext][, comment])`: Removes the given `tag` recursively from every file within the given `folder` and its subfolders. The optional `ext` argument is a string or list of strings specifying which file extensions to include (default `tex`), while the optional `comment` boolean specifies whether to remove tags from comments (default `False`). Returns the total number of removals made.
+* `tex_untag.untag_file(fname, tag[, comment])`: Removes the given `tag` from a single file or a list of files called `fname`. The optional `comment` boolean specifies whether to remove tags from comments (default `False`). Returns the total number of tag removals made.
+* `tex_untag.untag_folder(folder, tag[, ext][, comment])`: Removes the given `tag` recursively from every file within the given `folder` and its subfolders. The optional `ext` argument is a string or list of strings specifying which file extensions to include (default `tex`), while the optional `comment` boolean specifies whether to remove tags from comments (default `False`). Returns the total number of tag removals made and the total number of files processed.
+
+## Command Line Usage
+
+The main `tex_untag.py` file can be used from the command line as follows:
+```
+usage: tex_untag.py [-h] [-v] [-f [FILES ...]] -t TAG [-e [EXTENSIONS ...]] [-q] [-r] [-c]
+
+A script for removing markup tags from a set of TeX files.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -f [FILES ...], --file [FILES ...]
+                        file, list of files, or directory to process (if blank and
+                        --recursive, uses current working directory)
+  -t TAG, --tag TAG     tag to remove from files
+  -e [EXTENSIONS ...], --extension [EXTENSIONS ...]
+                        file extensions to process (default only tex)
+  -q, --quiet           silence result message
+  -r, --recursive       recursively process all files in the givendirectory
+  -c, --comments        removes tags even in comments
+
+This script removes a given TeX markup tag from a given file or set of files. The tag is
+assumed to use the form "\tag{...}". The given tag should include the full text that falls
+between the '\' and '{' characters.
+
+The file (-f) argument can include a single file, a list of files, or a directory, in which
+case the recursive (-r) flag should be used.
+
+The extension (-e) argument is optional, in which case only 'tex' files will be processed.
+Otherwise it can include either a list of file extensions or the '*' character, in which
+case all files will be included.
+```
+
+For example,
+```
+$ python3 tex_untag.py -f introduction.tex results.tex conclusion.tex -t textit -c
+```
+would remove all italic `\textit{...}` tags from the three local files `introduction.tex`, `results.tex`, and `conclusion.tex`, including those located inside comments, while
+```
+$ python3 tex_untag.py -f report -t textcolor{red} -e tex bbl --recursive
+```
+would remove all red text `\textcolor{red}{...}` tags from every `.tex` or `.bbl` file within the local directory `report/`.
