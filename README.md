@@ -1,9 +1,5 @@
-* Write `README.md`. Replace `###` in the badge links with this repo's name.
-* Update `LICENSE` year and maintenance badge year.
-* Update `.gitignore`.
-* Update file paths in `setup.cfg`, `setup.py`, and all `__init__.py` files.
-* Update required version numbers in `pyproject.toml`, `setup.cfg`, and `setup.py` (and also `requirements.txt` if using).
+# TeX Untag
 
-# Title
+<a href="https://pypi.org/project/tex-untag"><img src="https://img.shields.io/pypi/v/tex-untag?logo=pypi&logoColor=white"/></a> <a href="https://github.com/adam-rumpf/tex-untag"><img src="https://img.shields.io/github/v/tag/adam-rumpf/tex-untag?logo=github"></a> <a href="https://pypi.org/project/tex-untag/#history"><img src="https://img.shields.io/pypi/status/tex-untag"/></a> <a href="https://www.python.org/"><img src="https://img.shields.io/pypi/pyversions/tex-untag?logo=python&logoColor=white"></a> <a href="https://github.com/adam-rumpf/tex-untag/blob/main/LICENSE"><img src="https://img.shields.io/github/license/adam-rumpf/tex-untag"/></a> <a href="https://github.com/adam-rumpf/tex-untag/commits/main"><img src="https://img.shields.io/maintenance/yes/2021"/></a>
 
-<a href="https://pypi.org/project/###"><img src="https://img.shields.io/pypi/v/###?logo=pypi&logoColor=white"/></a> <a href="https://github.com/adam-rumpf/###"><img src="https://img.shields.io/github/v/release/adam-rumpf/###?logo=github"></a> <a href="https://pypi.org/project/###/#history"><img src="https://img.shields.io/pypi/status/###"/></a> <a href="https://www.python.org/"><img src="https://img.shields.io/pypi/pyversions/###?logo=python&logoColor=white"></a> <a href="https://github.com/adam-rumpf/###/blob/main/LICENSE"><img src="https://img.shields.io/github/license/adam-rumpf/###"/></a> <a href="https://github.com/adam-rumpf/###/commits/main"><img src="https://img.shields.io/maintenance/yes/2021"/></a>
+A script for removing all of a given markup tag from a set of TeX files.
