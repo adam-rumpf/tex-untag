@@ -1,9 +1,5 @@
 """Defines the main TeX file processing script."""
 
-###
-if __name__ != "__main__":
-    from ._version import __author__, __version__
-
 import os
 import re
 import sys
@@ -144,16 +140,17 @@ def untag_file(fname, tag, comment=False):
 
 #-----------------------------------------------------------------------------
 
-def untag_folder(fname, tag, ext="tex", comment=False):
+def untag_folder(folder, tag, ext="tex", comment=False):
     """Removes all of a given tag from every TeX file in a given folder.
 
     Positional arguments:
-    fname -- file path of the folder whose contents will be recursively edited
+    folder -- directory to recursively proess
     tag -- tag to be removed
 
     Keyword arguments:
     ext -- string or list of strings specifying file types to process
-        (default "tex")
+        (default "tex"); using the string "*" converts all files regardless of
+        extension
     comment -- True to process comment lines, False otherwise (default False)
 
     Returns:
@@ -168,16 +165,35 @@ def untag_folder(fname, tag, ext="tex", comment=False):
     same line.
     """
 
-    count = 0 # number of removals made
+    # Convert extension list to tuple
+    if isinstance(ext, str) == True:
+        ext = (ext,)
+    elif isinstance(ext, list) == True:
+        ext = tuple(ext)
+    elif isinstance(ext, tuple) == False:
+        sys.exit("File extensions must be a string or list of strings.")
 
     # Get directory path
-    if os.path.exists(fname) == False:
+    path = os.path.abspath(folder)
+    if os.path.exists(path) == False:
         sys.exit("Input path does not exist.")
-    path = os.path.absname(fname)
     if os.path.isdir(path) == False:
         sys.exit("Input path is not a directory name.")
 
-    ###
+    # Generate file list
+    flist = [] # list of files to process
+    for root, _, files in os.walk(path):
+        for f in files:
+
+            # Skip excluded file types
+            if "*" not in ext and f.endswith(ext) == False:
+                continue
+
+            # Collect remaining files in list
+            flist.append(os.path.join(root, f))
+
+    # Process all selected files
+    return untag_file(flist, tag=tag, comment=comment)
 
 #-----------------------------------------------------------------------------
 
@@ -186,4 +202,8 @@ if __name__ == "__main__":
     ### Add a -r argument to process a directory.
     #print(_untag_string("This is a \\textit{t\\textbf{e}st}.", "textit"))
     #print(_untag_string("This is a \\textit{test}.", "textit"))
-    print(_untag_string("This is a \\textit{test.", "textit"))
+    #print(_untag_string("This is a \\textit{test.", "textit"))
+    ### Default to current directory
+    #if folder == None:
+    #    folder = os.getcwd()
+    pass
