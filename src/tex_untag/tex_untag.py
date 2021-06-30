@@ -23,7 +23,7 @@ def _untag_string(s, tag):
 
     The 'tag' argument should include only the letters that make up the name
     of the tag. For example, to remove all instances of the
-        \\textit{...}
+        \textit{...}
     tag, pass the argument 'textit'.
 
     It is assumed that any instances of the given tag begin and end on the
@@ -74,10 +74,10 @@ def _untag_string(s, tag):
 #-----------------------------------------------------------------------------
 
 def untag_file(fname, tag, comment=False):
-    """Removes all of a given tag from a given TeX file.
+    """Removes all of a given tag from a given TeX file or list of files.
 
     Positional arguments:
-    fname -- file path of file to be edited
+    fname -- file path of file to be edited, or list of file paths
     tag -- tag to be removed
 
     Keyword arguments:
@@ -88,7 +88,7 @@ def untag_file(fname, tag, comment=False):
 
     The 'tag' argument should include only the letters that make up the name
     of the tag. For example, to remove all instances of the
-        \\textit{...}
+        \textit{...}
     tag, pass the argument 'textit'.
 
     It is assumed that any instances of the given tag begin and end on the
@@ -97,38 +97,87 @@ def untag_file(fname, tag, comment=False):
 
     count = 0 # number of removals made
 
-    # Get file directory
-    path = os.path.abspath(fname)
-    if os.path.isfile(path) == False:
-        sys.exit("Input path is not a file name.")
-    if os.path.exists(path) == False:
-        sys.exit("Input path does not exist.")
+    # Convert input to a file list if needed
+    if isinstance(fname, str) == True:
+        fname = [fname]
+    elif (isinstance(fname, list) or isinstance(fname, tuple)) == False:
+        sys.exit("Input must be a file or list of files.")
 
-    # Initialize output file
-    outfile = path + ".tmp"
+    # Process all files
+    for f in fname:
 
-    # Write edits to a temporary file
-    with open(fname, mode='r') as fin:
-        with open(outfile, mode='w') as fout:
+        # Get file path
+        if os.path.exists(f) == False:
+            sys.exit("Input path does not exist.")
+        path = os.path.abspath(f)
+        if os.path.isfile(path) == False:
+            sys.exit("Input path is not a file name.")
 
-            for line in fin:
+        # Initialize output file
+        outfile = path + ".tmp"
 
-                # Split line at comment
-                parts = re.split("(?<!\\\\)%", line)
+        # Write edits to a temporary file
+        with open(f, mode='r') as fin:
+            with open(outfile, mode='w') as fout:
 
-                # Remove the tag from the pre-comment string
-                lcount = 0 # number of replacements made in this line
-                (parts[0], lcount) = _untag_string(parts[0], tag)
-                count += lcount
+                for line in fin:
 
-                # Write edited line to temporary file
-                print("%".join(parts), file=fout, end="")
+                    # Split line at comment
+                    if comment == True:
+                        parts = re.split("(?<!\\\\)%", line)
+                    else:
+                        parts = [line]
 
-    # Replace original file with temporary file
-    os.remove(path)
-    os.rename(outfile, path)
+                    # Remove the tag from the pre-comment string
+                    lcount = 0 # number of replacements made in this line
+                    (parts[0], lcount) = _untag_string(parts[0], tag)
+                    count += lcount
+
+                    # Write edited line to temporary file
+                    print("%".join(parts), file=fout, end="")
+
+        # Replace original file with temporary file
+        os.remove(path)
+        os.rename(outfile, path)
 
     return count
+
+#-----------------------------------------------------------------------------
+
+def untag_folder(fname, tag, ext="tex", comment=False):
+    """Removes all of a given tag from every TeX file in a given folder.
+
+    Positional arguments:
+    fname -- file path of the folder whose contents will be recursively edited
+    tag -- tag to be removed
+
+    Keyword arguments:
+    ext -- string or list of strings specifying file types to process
+        (default "tex")
+    comment -- True to process comment lines, False otherwise (default False)
+
+    Returns:
+    number of tag removals made
+
+    The 'tag' argument should include only the letters that make up the name
+    of the tag. For example, to remove all instances of the
+        \textit{...}
+    tag, pass the argument 'textit'.
+
+    It is assumed that any instances of the given tag begin and end on the
+    same line.
+    """
+
+    count = 0 # number of removals made
+
+    # Get directory path
+    if os.path.exists(fname) == False:
+        sys.exit("Input path does not exist.")
+    path = os.path.absname(fname)
+    if os.path.isdir(path) == False:
+        sys.exit("Input path is not a directory name.")
+
+    ###
 
 #-----------------------------------------------------------------------------
 
