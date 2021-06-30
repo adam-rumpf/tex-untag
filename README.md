@@ -20,7 +20,7 @@ untag_file("report.tex", "textcolor{red}")
 ```
 would remove all red text tags of the form `\textcolor{red}{...}`. Comments are (optionally) ignored during this process.
 
-Noe that, since this process involves ovewriting existing files, it is recommended that you back up your data before attempting to use it.
+Note that, since this process involves overwriting existing files, it is recommended that you back up your data before attempting to use it.
 
 ## Functions
 

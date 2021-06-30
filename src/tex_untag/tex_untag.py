@@ -1,5 +1,8 @@
-"""Defines the main TeX file processing script."""
+"""Defines the main TeX file processing scripts."""
 
+from ._version import __author__, __version__
+
+import argparse
 import os
 import re
 import sys
@@ -154,7 +157,8 @@ def untag_folder(folder, tag, ext="tex", comment=False):
     comment -- True to process comment lines, False otherwise (default False)
 
     Returns:
-    number of tag removals made
+    (int, int) tuple with number of tag removals made and number of files
+        processed
 
     The 'tag' argument should include only the letters that make up the name
     of the tag. For example, to remove all instances of the
@@ -198,4 +202,79 @@ def untag_folder(folder, tag, ext="tex", comment=False):
             flist.append(os.path.join(root, f))
 
     # Process all selected files
-    return untag_file(flist, tag=tag, comment=comment)
+    return (untag_file(flist, tag=tag, comment=comment), len(flist))
+
+#-----------------------------------------------------------------------------
+
+def main():
+    """Main driver for command line usage of the tag remover.
+
+    Reads command line arguments to attempt to process a file or files.
+    """
+
+    # Define documentation strings
+    desc = "A script for removing markup tags from a set of TeX files."
+    vers = ("TeX Untag v" + __version__ + "\nCopyright (c) 2021 Adam Rumpf" +
+            "\narumpf@floridapoly.edu")
+    epil = """
+    This script removes a given TeX markup tag from a given file or set of
+    files. The tag is assumed to use the form "\tag{...}". The given tag
+    should include the full text that falls between the '\' and '{'
+    characters.
+
+    The file (-f) argument can include a single file, a list of files, or a
+    directory, in which case the recursive (-r) flag should be used.
+
+    The extension (-e) argument is optional, in which case only 'tex' files
+    will be processed. Otherwise it can include either a list of file
+    extensions or the '*' character, in which case all files will be included.
+    """
+
+    # Define argument parser
+    parser = argparse.ArgumentParser(description=desc, epilog=epil)
+    parser.add_argument("-v", "--version", action="version", version=vers)
+    parser.add_argument("-f", "--file", nargs="+", dest="files",
+                        help="file, list of files, or directory to process")
+    parser.add_argument("-t", "--tag", nargs=1, dest="tag",
+                        help="tag to remove from files")
+    parser.add_argument("-e", "--extension", nargs="*", dest="extensions",
+                        default=["tex"],
+                        help="file extensions to process (default only tex)")
+    parser.add_argument("-q", "--quiet", action="store_true", dest="quiet",
+                        help="silence result message")
+    parser.add_argument("-r", "--recursive", action="store_true",
+                        dest="recursive",
+                        help="recursively process all files in the given"+
+                             "directory")
+    parser.add_argument("-c", "--comments", action="store_true",
+                        dest="comment",
+                        help="removes tags even in comments")
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Determine behavior depending on arguments
+    if args.recursive == True:
+        # Recursive processing
+        (rm, fl) = untag_folder(args.files, args.tag, ext=args.extensions,
+                                comment=args.comment)
+        if args.quiet == False:
+            print("A total of " + str(rm) + " '" + args.tag + "' tags were " +
+                  "removed from " + str(fl) + " file(s).")
+
+    else:
+        # File or file list processing
+        rm = untag_file(args.files, args.tag, comment=args.comment)
+        if args.quiet == False:
+            if len(args.files) > 1:
+                print("A total of " + str(rm) + " '" + args.tag +
+                      "' tags were removed from " + str(len(args.quiet)) +
+                      " files.")
+            else:
+                print("A total of " + str(rm) + " '" + args.tag +
+                      "' tags were removed.")
+
+#-----------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    main()
