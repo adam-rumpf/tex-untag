@@ -15,7 +15,8 @@ def _untag_string(s, tag):
     tag -- tag to be removed
 
     Returns:
-    string consisting of the input string with the given tag deleted
+    (string, int) tuple including the edited string and the number of removals
+    made
 
     The 'tag' argument should include only the letters that make up the name
     of the tag. For example, to remove all instances of the
@@ -24,7 +25,7 @@ def _untag_string(s, tag):
     """
 
     ###
-    return s
+    return (s, 0)
 
 #-----------------------------------------------------------------------------
 
@@ -38,11 +39,16 @@ def untag_file(fname, tag, comment=False):
     Keyword arguments:
     comment -- True to process comment lines, False otherwise (default False)
 
+    Returns:
+    number of tag removals made
+
     The 'tag' argument should include only the letters that make up the name
     of the tag. For example, to remove all instances of the
         \\textit{...}
     tag, pass the argument 'textit'.
     """
+
+    count = 0 # number of replacements made
 
     # Get file directory
     path = os.path.abspath(fname)
@@ -58,10 +64,15 @@ def untag_file(fname, tag, comment=False):
                 parts = re.split("(?<!\\\\)%", line)
 
                 # Remove the tag from the pre-comment string
-                parts[0] = _untag_string(parts[0], tag)
+                lcount = 0 # number of replacements made in this line
+                (parts[0], lcount) = _untag_string(parts[0], tag)
+                count += lcount
 
                 # Write edited line to temporary file
                 print("%".join(parts), file=fout, end="")
 
     # Replace original file with temporary file
-    ###
+    os.remove(path)
+    os.rename(outfile, path)
+
+    return count
