@@ -1,4 +1,9 @@
+# Python files
 .venv/
 dist/
 *.egg-info/
 *.pyc
+
+# TeX files
+*.tex
+*.tmp
