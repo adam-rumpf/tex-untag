@@ -97,17 +97,17 @@ def untag_file(fname, tag, comment=False):
     if isinstance(fname, str) == True:
         fname = [fname]
     elif (isinstance(fname, list) or isinstance(fname, tuple)) == False:
-        sys.exit("Input must be a file or list of files.")
+        raise TypeError("input must be a file or list of files")
 
     # Process all files
     for f in fname:
 
         # Get file path
         if os.path.exists(f) == False:
-            sys.exit("Input path does not exist.")
+            raise FileNotFoundError("input path does not exist")
         path = os.path.abspath(f)
         if os.path.isfile(path) == False:
-            sys.exit("Input path is not a file name.")
+            raise FileNotFoundError("input path is not a file name")
 
         # Initialize output file
         outfile = path + ".tmp"
@@ -171,8 +171,8 @@ def untag_folder(folder, tag, ext="tex", comment=False):
     elif isinstance(ext, tuple) == True:
         ext = list(ext)
     elif isinstance(ext, list) == False:
-        sys.exit("File extensions must be a string or list of strings.")
-    
+        raise TypeError("file extensions must be a string or list of strings")
+
     # Convert extensions into a lowercase tuple
     for i in range(len(ext)):
         ext[i] = ext[i].lower()
@@ -181,9 +181,9 @@ def untag_folder(folder, tag, ext="tex", comment=False):
     # Get directory path
     path = os.path.abspath(folder)
     if os.path.exists(path) == False:
-        sys.exit("Input path does not exist.")
+        raise NotADirectoryError("input path does not exist")
     if os.path.isdir(path) == False:
-        sys.exit("Input path is not a directory name.")
+        raise NotADirectoryError("input path is not a directory name")
 
     # Generate file list
     flist = [] # list of files to process
