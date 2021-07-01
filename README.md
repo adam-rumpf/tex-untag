@@ -46,7 +46,7 @@ optional arguments:
   -e [EXTENSIONS ...], --extension [EXTENSIONS ...]
                         file extensions to process (default only tex)
   -q, --quiet           silence result message
-  -r, --recursive       recursively process all files in the givendirectory
+  -r, --recursive       recursively process all files in the given directory
   -c, --comments        removes tags even in comments
 
 This script removes a given TeX markup tag from a given file or set of files. The tag is
@@ -56,7 +56,7 @@ between the '\' and '{' characters.
 The file (-f) argument can include a single file, a list of files, or a directory, in which
 case the recursive (-r) flag should be used.
 
-The extension (-e) argument is optional, in which case only 'tex' files will be processed.
+The extension (-e) argument is optional, and if absent only 'tex' files will be processed.
 Otherwise it can include either a list of file extensions or the '*' character, in which
 case all files will be included.
 ```

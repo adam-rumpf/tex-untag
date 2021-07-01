@@ -224,7 +224,7 @@ def main():
     The file (-f) argument can include a single file, a list of files, or a
     directory, in which case the recursive (-r) flag should be used.
 
-    The extension (-e) argument is optional, in which case only 'tex' files
+    The extension (-e) argument is optional, and if absent only 'tex' files
     will be processed. Otherwise it can include either a list of file
     extensions or the '*' character, in which case all files will be included.
     """
@@ -246,7 +246,7 @@ def main():
                         help="silence result message")
     parser.add_argument("-r", "--recursive", action="store_true",
                         dest="recursive",
-                        help="recursively process all files in the given"+
+                        help="recursively process all files in the given "+
                              "directory")
     parser.add_argument("-c", "--comments", action="store_true",
                         dest="comment",
