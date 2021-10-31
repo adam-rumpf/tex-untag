@@ -1,6 +1,6 @@
 """Defines the main TeX file processing scripts."""
 
-from ._version import __author__, __version__
+from ._version import __author__, __version__, _author_email, _copyright_year
 
 import argparse
 import os
@@ -213,8 +213,8 @@ def main():
 
     # Define documentation strings
     desc = "A script for removing markup tags from a set of TeX files."
-    vers = ("TeX Untag v" + __version__ + "\nCopyright (c) 2021 Adam Rumpf" +
-            "\narumpf@floridapoly.edu")
+    vers = ("TeX Untag v" + __version__ + "\nCopyright (c) " + _copyright_year
+            + " " + __author__ + "\n" + _author_email)
     epil = """
     This script removes a given TeX markup tag from a given file or set of
     files. The tag is assumed to use the form "\\tag{...}". The given tag
