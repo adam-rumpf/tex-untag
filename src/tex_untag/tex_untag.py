@@ -1,6 +1,6 @@
 """Defines the main TeX file processing scripts."""
 
-from ._version import __author__, __version__
+from ._version import __author__, __version__, _author_email, _copyright_year
 
 import argparse
 import os
@@ -28,44 +28,40 @@ def _untag_string(s, tag):
     same line.
     """
 
-    count = 0 # number of removals made
-    out = "" # output string
-
     # Define \tag{...} head regex pattern
-    head = "\\\\" + tag + "\\{"
+    head = "\\" + tag + "{"
 
-    # Split string at tag heads
-    parts = re.split(head, s)
-    out = parts[0]
-
-    # Look for closing brackets to match to tag heads
-    overflow = False # whether the line ends with an open bracket
-    i = 0 # current line part
-    while i < len(parts) - 1:
+    # Do nothing if tag is absent
+    if head not in s:
+        return (s, 0)
+    
+    # Otherwise find the first tag head
+    start = s.find(head) # position of first tag head
+    out = s[:start] # take beginning of string
+    count = 1 # number of tag removals made
+    
+    # Look for closing brackets to match tag head
+    i = start + len(head) # current position within string segment
+    depth = 1 # bracket depth
+    while i < len(s) - 1 and depth > 0:
         i += 1
-        depth = 1 # bracket depth
-        j = 0 # position within string segment
+        if s[i] == "{" and s[i-1:i+1] != "\{":
+            depth += 1
+        elif s[i] == "}" and s[i-1:i+1] != "\}":
+            depth -= 1
 
-        while depth > 0 and j < len(parts[i]) - 1:
-            j += 1
-            if parts[i][j] == "{" and parts[i][j-1:j+1] != "\{":
-                depth += 1
-            elif parts[i][j] == "}" and parts[i][j-1:j+1] != "\}":
-                depth -= 1
-
-        if depth == 0:
-            # If closing bracket was found, remove it
-            count += 1
-            out += parts[i][:j] + parts[i][j+1:]
-        else:
-            # Otherwise keep the full string and break
-            overflow = True
-            break
-
-    # If the line oveflowed, include the remainder unaltered
-    if overflow == True:
-        head = "\\" + tag + "{"
-        out += head + head.join(parts[i:])
+    if depth <= 0:
+        # If a closing bracket was found, take everything around it
+        out += s[start+len(head):i] + s[i+1:]
+    else:
+        # Otherwise take the entire tail of the string
+        out += s[start+len(head):]
+    
+    # Recursively remove tags from remainder
+    (out, rcount) = _untag_string(out, tag)
+    count += rcount
+    
+    return (out, count)
 
     return (out, count)
 
@@ -213,8 +209,8 @@ def main():
 
     # Define documentation strings
     desc = "A script for removing markup tags from a set of TeX files."
-    vers = ("TeX Untag v" + __version__ + "\nCopyright (c) 2021 Adam Rumpf" +
-            "\narumpf@floridapoly.edu")
+    vers = ("TeX Untag v" + __version__ + "\nCopyright (c) " + _copyright_year
+            + " " + __author__ + "\n" + _author_email)
     epil = """
     This script removes a given TeX markup tag from a given file or set of
     files. The tag is assumed to use the form "\\tag{...}". The given tag

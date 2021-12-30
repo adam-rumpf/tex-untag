@@ -7,3 +7,6 @@ dist/
 # TeX files
 *.tex
 *.tmp
+
+# Miscellaneous project files
+test/

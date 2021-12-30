@@ -10,5 +10,5 @@ functions that accept a tag string as an argument expect the exact text
 falling between the "\" and the "{".
 """
 
-from ._version import __author__, __version__
+from ._version import __author__, __version__, _author_email, _copyright_year
 from .tex_untag import *
