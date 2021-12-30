@@ -1,0 +1,6 @@
+-Move from Beta to Release
+-Test the new setup on the PyPI test server to ensure that the imported author/email fields work correctly
+	-If it works, also update this format in the my pypi template on GitHub
+-Ensure that the program works for nested sets of tags by repeating the algorithm until no modifications are made
+-Add an [-s] or [--save] command line option to save the old file by appending ".old" to its file name; if that already exists, append "_1.old" instead, and if that already exists, keep incrementing the number until finding one that hasn't been used yet.
+-Update the README to include the new documentation for -s and some of the new behavior.
